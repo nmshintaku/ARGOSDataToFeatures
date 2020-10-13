@@ -13,51 +13,54 @@
 # Import modules
 import sys, os, arcpy
 
+#Allow arcpy to overwrite outputs
+arcpy.env.overwriteOutput = True
+
 # Set input variables (Hard-wired)
-inputFile = 'V:/ARGOSTracking/Data/ARGOSData/1997dg.txt'
+inputFile = 'V:\\ARGOSTracking\\Data\\ARGOSData\\1997dg.txt'
 outputFC = "V:/ARGOSTracking/Scratch/ARGOStrack.shp"
 
-#%% Construct a while loop to iterate through all lines in the datafile
-#Open the ARGOS data file for reading
-inputFileObj = open(inputFile, 'r')
+#Create empty feature class to which we will add features
+outPath, outName = os.path.split(outputFC)
+arcpy.CreateFeatureclass_management(outPath, outName, "POINT")
 
-#Get the first line of data so we can use a while loop
+#%% Construct a while loop to iterate through all lines in the datafile
+# Open the ARGOS data file for reading
+inputFileObj = open(inputFile,'r')
+
+# Get the first line of data, so we can use the while loop
 lineString = inputFileObj.readline()
 
 #Start the while loop
-while lineString:
+while lineString: 
     
-    #Set code to run only if the line contain the string "Date:"
+    # Set code to run only if the line contains the string "Date: "
     if ("Date :" in lineString):
         
-        #parse the line into a list
+        # Parse the line into a list
         lineData = lineString.split()
         
-        #Extract attributes from the datum header line
+        # Extract attributes from the datum header line
         tagID = lineData[0]
-        obsDate = lineData[3]
+        obsDate= lineData[3]
         obsTime = lineData[4]
         obsLC = lineData[7]
         
-        #Extract location info from the next line
+        # Extract location info from the next line
         line2String = inputFileObj.readline()
         
-        #Parse the line into a list
+        # Parse the line into a list
         line2Data = line2String.split()
         
-        #Extract the date we need to variables
+        # Extract the date we need to variables
         obsLat = line2Data[2]
-        obsLon = line2Data[5]
+        obsLon= line2Data[5]
         
-        #print results to see how we're doing
-        print(tagID,obsDate,obsTime,obsLC,"Lat:"+obsLat,"Long:"+obsLon)
-    
-    #move to the next line so the while loop progresses
+        # Print results to see how we're doing
+        print (tagID,obsDate,obsTime,obsLC,"Lat:"+obsLat,"Long:"+obsLon)
+        
+    # Move to the next line so the while loop progresses
     lineString = inputFileObj.readline()
     
-#close the file object
-inputFileObj.close()    
-        
-        
-        
-
+#Close the file object
+inputFileObj.close()
